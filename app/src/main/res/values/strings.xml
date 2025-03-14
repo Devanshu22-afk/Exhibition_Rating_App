@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Exhibition Rating App</string>
+    <string name="admin_login">Admin Login</string>
+    <string name="login_for_rating">Login for Rating:</string>
+    <string name="submit_rating">Submit Rating</string>
 
 </resources>

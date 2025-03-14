@@ -4,5 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="golden">#FFD700</color>
     <color name="buttonColor">#6495ED</color>
+    <color name="blue">#47A6E5</color>
 
 </resources>

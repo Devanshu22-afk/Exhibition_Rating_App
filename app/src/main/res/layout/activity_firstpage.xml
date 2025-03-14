@@ -13,40 +13,43 @@
         android:id="@+id/login_image"
         android:layout_width="0dp"
         android:layout_height="250dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:contentDescription="Login illustration"
         android:scaleType="centerInside"
         android:src="@drawable/lpup"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"/>
 
     <!-- Welcome Text -->
     <TextView
         android:id="@+id/welcome_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="Hi Welcome!"
         android:textColor="#333333"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/login_image" />
+        app:layout_constraintTop_toBottomOf="@id/login_image"
+        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_marginTop="16dp"/>
 
     <!-- Subtitle Text -->
     <TextView
         android:id="@+id/login_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text="Login to Continue"
         android:textColor="#333333"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/welcome_text" />
+        app:layout_constraintTop_toBottomOf="@id/welcome_text"
+        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_marginTop="8dp"/>
 
     <!-- Username EditText -->
     <EditText
@@ -54,15 +57,20 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:textColor="@color/black"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:clipToOutline="true"
+        android:backgroundTint="#F0F2F5"
         android:hint="Username"
         android:inputType="text"
-        android:textColorHint="@color/black"
         android:padding="12dp"
-        android:backgroundTint="#CCCCCC"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/login_subtitle" />
+        app:layout_constraintTop_toBottomOf="@id/login_subtitle"
+        app:layout_constraintHorizontal_bias="0.5"
+        android:lineSpacingExtra="4sp"/>
 
     <!-- Password EditText -->
     <EditText
@@ -70,6 +78,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:hint="Password"
         android:inputType="textPassword"
         android:textColor="@color/black"
@@ -78,34 +88,40 @@
         android:backgroundTint="#CCCCCC"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/username_input" />
+        app:layout_constraintTop_toBottomOf="@id/username_input"
+        app:layout_constraintHorizontal_bias="0.5"/>
 
     <!-- Login Button -->
     <Button
         android:id="@+id/login_button"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:layout_marginTop="24dp"
-        android:backgroundTint="#FFBB33"
-        android:text="Admin Login"
+        android:backgroundTint="#47A6E5"
+        android:text="@string/admin_login"
         android:textColor="#FFFFFF"
+        android:textAppearance="@style/log_in"
+        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/password_input" />
+        app:layout_constraintTop_toBottomOf="@id/password_input"
+        app:layout_constraintHorizontal_bias="0.5"/>
 
     <!-- OR Text -->
     <TextView
         android:id="@+id/or_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Login for Rating:"
+        android:text="@string/login_for_rating"
         android:textColor="#666666"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/login_button" />
+        app:layout_constraintTop_toBottomOf="@id/login_button"
+        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_marginTop="24dp"/>
 
     <!-- Google Sign-In Button -->
     <com.google.android.gms.common.SignInButton
@@ -115,31 +131,34 @@
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/or_text" />
+        app:layout_constraintTop_toBottomOf="@id/or_text"
+        app:layout_constraintHorizontal_bias="0.5"/>
 
     <!-- Terms and Privacy Policy Text -->
     <TextView
         android:id="@+id/terms_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="By signing in, you agree to our "
         android:textColor="#666666"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/googleSignInButton" />
+        app:layout_constraintTop_toBottomOf="@id/googleSignInButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_marginTop="16dp"/>
 
     <!-- Linear Layout for Links -->
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/terms_text">
+        app:layout_constraintTop_toBottomOf="@id/terms_text"
+        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_marginTop="8dp">
 
         <TextView
             android:id="@+id/terms"
@@ -164,5 +183,6 @@
             android:textColor="#3366FF"
             android:textSize="14sp" />
     </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

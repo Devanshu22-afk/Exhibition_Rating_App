@@ -8,27 +8,33 @@
     tools:context=".scannerpage">
 
     <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#000000"
-        android:id="@+id/container">
+        android:background="#000000">
 
+        <!-- Camera Preview -->
         <androidx.camera.view.PreviewView
+            android:id="@+id/previewView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/previewView" />
+            android:layout_height="match_parent" />
 
+        <!-- Scanner Frame Overlay -->
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="718dp">
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="20dp">
 
             <ImageView
                 android:id="@+id/image"
                 android:layout_width="300dp"
                 android:layout_height="300dp"
                 android:layout_centerInParent="true"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/background_image" />
+                android:background="@drawable/background_image"
+                android:scaleType="fitCenter" />
         </RelativeLayout>
+
     </FrameLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

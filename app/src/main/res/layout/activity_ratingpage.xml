@@ -8,28 +8,24 @@
     android:background="@drawable/gradient_background"
     android:padding="24dp">
 
+    <!-- Image that takes the upper part of the screen -->
+
+    <!-- Back Arrow -->
+
+    <!-- Group Title -->
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="220dp"
-        android:layout_height="220dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:src="@drawable/ipui"
+        android:layout_width="match_parent"
+        android:layout_height="297dp"
+        android:layout_marginTop="4dp"
+        android:src="@drawable/ri"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.35"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ipui" />
+        tools:src="@drawable/ri" />
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/arrow_back"
-        tools:ignore="MissingConstraints">
-
-    </ImageView>
-
-    <!-- TextView to display Group ID dynamically -->
     <TextView
         android:id="@+id/tvGroupTitle"
         android:layout_width="wrap_content"
@@ -44,6 +40,7 @@
         app:layout_constraintTop_toBottomOf="@id/imageView"
         tools:text="Group Title" />
 
+    <!-- Rate this group -->
     <TextView
         android:id="@+id/tvRateGroup"
         android:layout_width="wrap_content"
@@ -56,6 +53,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvGroupTitle" />
 
+    <!-- Rating Bar -->
     <RatingBar
         android:id="@+id/ratingBar"
         android:layout_width="wrap_content"
@@ -71,19 +69,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvRateGroup" />
 
+    <!-- Submit Button -->
     <Button
         android:id="@+id/btnSubmit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:backgroundTint="#FFBB33"
-        android:text="Submit Rating"
+        android:backgroundTint="@color/blue"
+        android:text="@string/submit_rating"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ratingBar" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,8 @@
 package com.example.madapp;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Image;
 import android.os.Bundle;
@@ -21,9 +23,9 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.Task;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
@@ -40,18 +42,19 @@ public class scannerpage extends AppCompatActivity {
     private static final String TAG = "scannerpage";
     private ExecutorService cameraExecutor;
     private PreviewView previewView;
-    private MyImageAnalyzer analyzer;
+    private ImageAnalysis imageAnalysis;
+    private boolean isScanningCompleted = false;
+    private ProcessCameraProvider cameraProvider;
     private String userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.scannerpage);  // Ensure correct layout file is used!
 
         userEmail = getIntent().getStringExtra("username");
-        Log.d(TAG, "User Email: " + userEmail); // Log the user email
+        Log.d(TAG, "User Email: " + userEmail);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -62,14 +65,11 @@ public class scannerpage extends AppCompatActivity {
         previewView = findViewById(R.id.previewView);
         cameraExecutor = Executors.newSingleThreadExecutor();
 
-
-        analyzer = new MyImageAnalyzer(getSupportFragmentManager(), userEmail);
-
         // Request camera permissions
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 101);
         } else {
-            startCamera();
+            previewView.post(() -> startCamera());  // 🔥 Delayed camera start to prevent surface=null
         }
     }
 
@@ -77,22 +77,24 @@ public class scannerpage extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 101 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            startCamera();
+            previewView.post(() -> startCamera());
         }
     }
 
     private void startCamera() {
-        ProcessCameraProvider.getInstance(this).addListener(() -> {
+        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
+        cameraProviderFuture.addListener(() -> {
             try {
-                ProcessCameraProvider cameraProvider = ProcessCameraProvider.getInstance(this).get();
-                bindPreview(cameraProvider);
+                cameraProvider = cameraProviderFuture.get();
+                cameraProvider.unbindAll();
+                bindPreview();
             } catch (ExecutionException | InterruptedException e) {
                 Log.e(TAG, "Error starting camera: ", e);
             }
         }, ContextCompat.getMainExecutor(this));
     }
 
-    private void bindPreview(ProcessCameraProvider cameraProvider) {
+    private void bindPreview() {
         Preview preview = new Preview.Builder().build();
         CameraSelector cameraSelector = new CameraSelector.Builder()
                 .requireLensFacing(CameraSelector.LENS_FACING_BACK)
@@ -100,32 +102,28 @@ public class scannerpage extends AppCompatActivity {
 
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
-        ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
+        imageAnalysis = new ImageAnalysis.Builder()
                 .setTargetResolution(new Size(1280, 720))
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build();
 
-        imageAnalysis.setAnalyzer(cameraExecutor, analyzer);
-        cameraProvider.unbindAll();
+        imageAnalysis.setAnalyzer(cameraExecutor, new MyImageAnalyzer());
+
         cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalysis);
     }
 
-    public class MyImageAnalyzer implements ImageAnalysis.Analyzer {
-        private FragmentManager fragmentManager;
-        private String userEmail;
-
-        public MyImageAnalyzer(FragmentManager supportFragmentManager, String userEmail) {
-            this.fragmentManager = supportFragmentManager;
-            this.userEmail = userEmail; // Initialize user email
-        }
-
+    private class MyImageAnalyzer implements ImageAnalysis.Analyzer {
         @Override
         public void analyze(@NonNull ImageProxy image) {
+            if (isScanningCompleted) {
+                image.close();
+                return;
+            }
             scanBarcode(image);
         }
 
         private void scanBarcode(ImageProxy image) {
-            Image mediaImage = image.getImage();
+            @SuppressLint("UnsafeOptInUsageError") Image mediaImage = image.getImage();
             if (mediaImage != null) {
                 InputImage inputImage = InputImage.fromMediaImage(mediaImage, image.getImageInfo().getRotationDegrees());
                 BarcodeScannerOptions options = new BarcodeScannerOptions.Builder()
@@ -136,16 +134,35 @@ public class scannerpage extends AppCompatActivity {
                 Task<List<Barcode>> result = scanner.process(inputImage)
                         .addOnSuccessListener(barcodes -> {
                             if (!barcodes.isEmpty()) {
-                                Log.d(TAG, "Barcode Data: " + barcodes.get(0).getRawValue()); // Log barcode data
-                                BottomDialog dialog = BottomDialog.newInstance(barcodes.get(0).getRawValue(), userEmail);
-                                dialog.show(fragmentManager, "BottomDialog");
+                                String barcodeData = barcodes.get(0).getRawValue();
+                                Log.d(TAG, "Barcode Data: " + barcodeData);
+
+                                isScanningCompleted = true;
+                                if (imageAnalysis != null) {
+                                    imageAnalysis.clearAnalyzer();
+                                }
+
+                                Intent intent = new Intent(scannerpage.this, ratingpage.class);
+                                intent.putExtra("groupID", barcodeData);
+                                intent.putExtra("username", userEmail);
+                                startActivity(intent);
+                                finish();  // 🔥 Close scanner after scan
                             }
                         })
-                        .addOnFailureListener(e -> {
-                            Log.e(TAG, "Barcode scan failed: ", e); // Log the error
-                        })
+                        .addOnFailureListener(e -> Log.e(TAG, "Barcode scan failed: ", e))
                         .addOnCompleteListener(task -> image.close());
             }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (cameraExecutor != null) {
+            cameraExecutor.shutdown();
+        }
+        if (cameraProvider != null) {
+            cameraProvider.unbindAll();
         }
     }
 }

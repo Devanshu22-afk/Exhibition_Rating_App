@@ -27,7 +27,6 @@ public class AllGroupsRatingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_groups_rating);
 
-
         scrollView = findViewById(R.id.scrollView);
         ratingsTextView = findViewById(R.id.ratingsTextView);
         ratingsRef = FirebaseDatabase.getInstance().getReference("Ratings");
@@ -48,7 +47,7 @@ public class AllGroupsRatingActivity extends AppCompatActivity {
                     float sum = 0;
                     int count = 0;
 
-
+                    // Collect ratings for each group
                     for (DataSnapshot ratingSnapshot : groupSnapshot.getChildren()) {
                         Float rating = ratingSnapshot.getValue(Float.class);
                         if (rating != null) {
@@ -57,22 +56,24 @@ public class AllGroupsRatingActivity extends AppCompatActivity {
                         }
                     }
 
+                    // Calculate average rating for each group
                     if (count > 0) {
                         float average = sum / count;
                         averageRatings.put(groupName, average);
-                        builder.append("Group: ").append(groupName)
-                                .append("\nAverage Rating: ").append(average)
-                                .append("\nRatings: ");
+                        builder.append("\n\n").append("Group: ").append(groupName)
+                                .append("\nAverage Rating: ").append(String.format("%.2f", average))
+                                .append("\nRatings:\n");
 
-
+                        // Display all individual ratings for the group
                         for (DataSnapshot ratingSnapshot : groupSnapshot.getChildren()) {
-                            builder.append(ratingSnapshot.getKey()).append(": ").append(ratingSnapshot.getValue()).append("\n");
+                            String userEmail = ratingSnapshot.getKey();
+                            Float ratingValue = ratingSnapshot.getValue(Float.class);
+                            builder.append(userEmail).append(": ").append(ratingValue).append("\n");
                         }
-
-                        builder.append("\n");
                     }
                 }
 
+                // Find the group with the highest average rating
                 String winnerGroup = null;
                 float maxAverage = 0;
 
@@ -83,16 +84,19 @@ public class AllGroupsRatingActivity extends AppCompatActivity {
                     }
                 }
 
+                // Display the winner group and its average rating
                 if (winnerGroup != null) {
-                    builder.append("Winner: ").append(winnerGroup).append(" with an average rating of ").append(maxAverage);
+                    builder.append("\n\nWinner: ").append(winnerGroup)
+                            .append(" with an average rating of ").append(String.format("%.2f", maxAverage));
                 }
 
+                // Set the formatted ratings text in the TextView
                 ratingsTextView.setText(builder.toString());
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // Handle any error that occurs during the data retrieval
             }
         });
     }
