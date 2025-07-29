@@ -40,7 +40,11 @@ View All Ratings – A dedicated page displays the ratings of all groups in a st
 
 Future Enhancements
 
-🔹 Enhanced UI design with improved aesthetics and intuitive navigation.🔹 Detailed analytics for admin insights into group performance.🔹 Offline rating storage with auto-sync when the device reconnects to the internet.
+🔹 Enhanced UI design with improved aesthetics and intuitive navigation.
+
+🔹 Detailed analytics for admin insights into group performance.
+
+🔹 Offline rating storage with auto-sync when the device reconnects to the internet.
 
 Setup Instructions
 
